@@ -77,12 +77,40 @@ app.get('/zip/:id', async function (req, res) {
 // Complete the code for the following
 
 app.get('/city', async function (req, res) {
+	// get city and state from query url
+	const city = req.query.city;
+	const state = req.query.state;
+	if (city && state) {
+		// get result by city and state
+		const result = cities.lookupByCityState(city.toUpperCase(), state.toUpperCase());
+		if (result.data.length > 0) {
+			res.render('lookupByCityStateView', result); // render view
+		} else {
+			// no data found 
+			res.status(404);
+			res.render('404');
+		}
 
+	} else {
+		res.render('lookupByCityStateForm'); // not present render lookupByZipForm
+	}
 
 });
 
 app.post('/city', async function (req, res) {
-
+	// get city and state from form's request body
+	const city = req.body.city;
+	const state = req.body.state;
+	// get result by city and state
+	const result = cities.lookupByCityState(city.toUpperCase(), state.toUpperCase());
+	// check result
+	if (result.data.length > 0) {
+		res.render('lookupByCityStateView', result); // render view
+	} else {
+		// no results found 
+		res.status(404);
+		res.render('404');
+	}
 
 });
 
@@ -92,35 +120,41 @@ app.get('/city/:city/state/:state', async function (req, res) {
 	const state = req.params.state;
 	// get result by city and state
 	const result = await cities.lookupByCityState(city.toUpperCase(), state.toUpperCase());
-	
-	res.format({
+	console.log('result2',result);
+	// make sure the result is found
+	if (result.data.length > 0) {
 
-		'application/json': function () {
-			res.json(result);
-		},
+		res.format({
 
-		'application/xml': function () {
-			// define the xml format
-			let resultXml = `<?xml version="1.0"?>
-				<cityState city="${result.city}" state="${result.state}">
-			`;
-			// loop the data add entry to xml
-			result.data.forEach(item => {
-				resultXml += `<entry zip="${item.zip}" pop="${item.pop}" />`;
-			});
-			// add closing tag for xml
-			resultXml += "</cityState>";
+			'application/json': function () {
+				res.json(result);
+			},
+
+			'application/xml': function () {
+				// define the xml format
+				let resultXml = `<?xml version="1.0"?>
+					<cityState city="${result.city}" state="${result.state}">
+				`;
+				// loop the data add entry to xml
+				result.data.forEach(item => {
+					resultXml += `<entry zip="${item.zip}" pop="${item.pop}" />`;
+				});
+				// add closing tag for xml
+				resultXml += "</cityState>";
 
 
-			res.type('application/xml');
-			res.send(resultXml);
-		},
+				res.type('application/xml');
+				res.send(resultXml);
+			},
 
-		'text/html': function () {
-			res.render('lookupByCityStateView', result);
+			'text/html': function () {
+				res.render('lookupByCityStateView', result);
 
-		}
-	});
+			}
+		});
+	} else {
+		res.status(404).send('Not found.');
+	}
 
 });
 

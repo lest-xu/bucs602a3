@@ -6,7 +6,7 @@ module.exports = async (req, res, next) => {
     // Fill in the code
     // get employee id from params on edit view 
     let id = req.params.id;
-    console.log('id', id);
+    
     // find the employee by id
     Employee.findById(id, (error, employee) => {
         if (error) {
@@ -16,7 +16,7 @@ module.exports = async (req, res, next) => {
         if (!employee) {
             return res.render('404');
         }
-        console.log('employee', employee);
+        
         // render edit employee view
         res.render('editEmployeeView', {
             title: 'Edit an Employee', data: {

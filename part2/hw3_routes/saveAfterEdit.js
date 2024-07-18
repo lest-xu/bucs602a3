@@ -16,7 +16,7 @@ module.exports = async (req, res, next) => {
         if (!employee) {
             return res.render('404');
         }
-        console.log('employee', employee);
+        
         // update first and last name
         employee.firstName = req.body.fname;
         employee.lastName = req.body.lname;

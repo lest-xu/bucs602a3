@@ -41,12 +41,11 @@ module.exports.lookupByZipCode = async (zip) => {
 // Complete the code for the following
 
 module.exports.lookupByCityState = async (city, state) => {
-    // print info
-    console.log(`Look up by city (${city}, ${state})`);
 	let collection = client.db(credentials.database).collection("zipcodes");
 	// Fill in the rest
 	let result = await collection.find({ city: city, state: state }).toArray();
 	
+	// define the return object
 	let resultObj = {
         'city': city,
         'state': state,

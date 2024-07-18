@@ -92,7 +92,7 @@ app.get('/city/:city/state/:state', async function (req, res) {
 	const state = req.params.state;
 	// get result by city and state
 	const result = await cities.lookupByCityState(city.toUpperCase(), state.toUpperCase());
-	console.log(result);
+	
 	res.format({
 
 		'application/json': function () {

@@ -82,7 +82,7 @@ app.get('/city', async function (req, res) {
 	const state = req.query.state;
 	if (city && state) {
 		// get result by city and state
-		const result = cities.lookupByCityState(city.toUpperCase(), state.toUpperCase());
+		const result = await cities.lookupByCityState(city.toUpperCase(), state.toUpperCase());
 		if (result.data.length > 0) {
 			res.render('lookupByCityStateView', result); // render view
 		} else {
@@ -102,7 +102,7 @@ app.post('/city', async function (req, res) {
 	const city = req.body.city;
 	const state = req.body.state;
 	// get result by city and state
-	const result = cities.lookupByCityState(city.toUpperCase(), state.toUpperCase());
+	const result = await cities.lookupByCityState(city.toUpperCase(), state.toUpperCase());
 	// check result
 	if (result.data.length > 0) {
 		res.render('lookupByCityStateView', result); // render view
@@ -159,12 +159,65 @@ app.get('/city/:city/state/:state', async function (req, res) {
 });
 
 app.get('/pop', async function (req, res) {
+	// get state from query url
+	const state = req.query.state;
+
+	// check if state exist
+	if (state) {
+		// get population by state
+		const result = await cities.getPopulationByState(state);
+		// make sure result is found
+		if (result.pop) {
+			res.render('populationView', result); // render view
+		} else {
+			// no results found 
+			res.status(404);
+			res.render('404');
+		}
+	} else {
+		res.render('populationForm'); // no sate present render populationForm
+	}
 
 
 });
 
 app.get('/pop/:state', async function (req, res) {
+	// get the state from the params
+	const state = req.params.state;
+	// get result by state
+	const result = await cities.getPopulationByState(state.toUpperCase());
+	
+	// make sure the result is found
+	if (result) {
+		// check the header JSON, XML, & HTML formats
+		const header = req.headers.accept;
 
+		if (header.includes('application/json')) {
+			res.json(result); // send json result
+		} else if (header === 'application/xml') {
+
+			// define the xml format
+			let xml = `<?xml version="1.0"?>
+			<statePop state="${result.state}">
+				<pop/>${result.pop}</pop>
+			</statePop>
+		`;
+
+			res.type('application/xml');
+			res.send(xml); // send xml result
+		} else {
+			// make sure found the result
+			if (result.pop > 0) {
+				res.render('populationView', result); // render HTML view
+			} else {
+				// no results found 
+				res.status(404);
+				res.render('404');
+			}
+		}
+	} else {
+		res.status(404).send('Not found.');
+	}
 
 });
 

@@ -47,10 +47,10 @@ module.exports.lookupByCityState = async (city, state) => {
 
 	// define the return object
 	let resultObj = {
-        'city': city,
-        'state': state,
-        'data': result ? result.map(i => ({zip: i._id, pop: i.pop})) : []
-    }
+		'city': city,
+		'state': state,
+		'data': result ? result.map(i => ({ zip: i._id, pop: i.pop })) : []
+	}
 
 	return resultObj;
 };
@@ -59,5 +59,21 @@ module.exports.getPopulationByState = async (state) => {
 	let collection = client.db(credentials.database).collection("zipcodes");
 
 	// Fill in the rest
+	let result = await collection.find({ state: state }).toArray();
+	
+	// get total pop by state
+	const totalPop = result.reduce((pop, item) => {
+		if (item.state === state) {
+			return pop + item.pop;
+		}
+		return pop;
+	}, 0);
 
+	// create the result obejct for return
+	const resultObj = {
+		'state': state,
+		'pop': totalPop
+	};
+	
+	return resultObj;
 };

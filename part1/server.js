@@ -120,7 +120,7 @@ app.get('/city/:city/state/:state', async function (req, res) {
 	const state = req.params.state;
 	// get result by city and state
 	const result = await cities.lookupByCityState(city.toUpperCase(), state.toUpperCase());
-	console.log('result2',result);
+
 	// make sure the result is found
 	if (result.data.length > 0) {
 

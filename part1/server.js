@@ -45,7 +45,7 @@ app.post('/zip', async function (req, res) {
 app.get('/zip/:id', async function (req, res) {
 	let id = req.params.id;
 	let result = await cities.lookupByZipCode(id);
-	console.log(result);
+	
 	res.format({
 
 		'application/json': function () {

@@ -1,4 +1,4 @@
-# Assignment 2 - CS602
+# Assignment 3 - CS602
 
 This README.md file provides an overview of the assignments functionality implemented for Assignment 3 Li Xu- CS602 O2 2024.
 

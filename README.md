@@ -45,11 +45,11 @@ This README.md file provides an overview of the assignments functionality implem
 1. Run the JavasSript code:
 
    ```sh
-   node part1/server/server.js
+   node part1/server.js
    ```
 
    ```sh
-   node part1/client/client.js
+   node part1/client.js
    ```
 
    ```sh
